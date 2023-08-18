@@ -27,9 +27,10 @@ public class MovieController {
     @GetMapping(path="/movies/mostwatched")
     public @ResponseBody Iterable<Movie> getMostWatched() {
         final Integer mostWatchedFrequency = ratingRepository.highestMovieFrequency();
-        final Iterable<Integer> mostWatchedIds = ratingRepository.mostWatched(mostWatchedFrequency);
+        final Iterable<Integer> mostWatchedIds = ratingRepository.findMovieIdsWithFrequency(mostWatchedFrequency);
         return movieRepository.findAllById(mostWatchedIds);
     }
+
 
     // Top Movie by genre
     @GetMapping(path="/movies/top/genre")
@@ -38,18 +39,19 @@ public class MovieController {
         HashMap<String, String> results = new HashMap<>();
         final Iterable<Integer> highestRatedIds = ratingRepository.highestRated();
 
-        for(Integer id: highestRatedIds) {
-            final Movie movie = movieRepository.findById(id).get();
+        final boolean[] stopLoop = {false};
 
-            final Iterable<String> genres = movie.getGenres();
-            for(String genre: genres) {
-                if(!results.containsKey(genre))
-                    results.put(genre, movie.getMovieTitle());
+        highestRatedIds.forEach(id -> {
+            if (!stopLoop[0]) {
+                final Movie movie = movieRepository.findById(id).get();
+                final Iterable<String> genres = movie.getGenres();
+                genres.forEach(genre -> results.putIfAbsent(genre, movie.getMovieTitle()));
+
+                if (results.size() == Movie.getPresentGenreCount()) {
+                    stopLoop[0] = true;
+                }
             }
-
-            if (results.size() == 19)
-                break;
-        }
+        });
 
         return results;
     }
@@ -62,13 +64,11 @@ public class MovieController {
         HashMap<Integer, String> results = new HashMap<>();
         final Iterable<Integer> highestRatedIds = ratingRepository.highestRated();
 
-        for(Integer id: highestRatedIds) {
+        highestRatedIds.forEach(id -> {
             final Movie movie = movieRepository.findById(id).get();
-
             final Integer year = movie.getReleaseYear();
-            if(!results.containsKey(year))
-                results.put(year, movie.getMovieTitle());
-        }
+            results.putIfAbsent(year, movie.getMovieTitle());
+        });
 
         return results;
     }
@@ -81,18 +81,17 @@ public class MovieController {
         HashMap<GenreYear, String> results = new HashMap<>();
         final Iterable<Integer> highestRatedIds = ratingRepository.highestRated();
 
-        for(Integer id: highestRatedIds) {
+        highestRatedIds.forEach(id -> {
             final Movie movie = movieRepository.findById(id).get();
 
             final Integer year = movie.getReleaseYear();
             final Iterable<String> genres = movie.getGenres();
 
-            for(String genre: genres) {
+            genres.forEach(genre -> {
                 final GenreYear genreYear = new GenreYear(genre, year);
-                if(!results.containsKey(genreYear))
-                    results.put(genreYear, movie.getMovieTitle());
-            }
-        }
+                results.putIfAbsent(genreYear, movie.getMovieTitle());
+            });
+        });
 
         return results;
     }
@@ -112,13 +111,5 @@ public class MovieController {
         final List<Object[]> highestRatedMovieFrequencies = ratingRepository.highestRatedMovieFrequencies();
         return MovieUtils.movieCountsToTopGenre(highestRatedMovieFrequencies, movieRepository);
     }
-
-
-    /*
-    @GetMapping(path="/movies/all")
-    public @ResponseBody Iterable<Movie> getAllMovies() {
-        return movieRepository.findAll();
-    }
-     */
 
 }

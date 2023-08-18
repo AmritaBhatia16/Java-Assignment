@@ -1,14 +1,5 @@
 package com.example.demo.model;
 
-import lombok.Data;
+public record GenreYear(String genre, Integer year) {
 
-@Data
-public class GenreYear {
-    private String genre;
-    private Integer year;
-
-    public GenreYear (String genre, Integer year) {
-        this.genre = genre;
-        this.year = year;
-    }
 }

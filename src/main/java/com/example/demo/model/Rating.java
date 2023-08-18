@@ -5,16 +5,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "ratings")
-//@IdClass(Data.class)
 @IdClass(RatingId.class)
-//implements Serializable
 public class Rating {
     @Id
     @Column(name = "user_id")

@@ -23,16 +23,9 @@ public class UserController {
 
     // Most active User
     @GetMapping(path="/users/active")
-    public @ResponseBody Optional<User> getActiveUsers() {
-        final Integer activeUserId = ratingRepository.mostActiveUser();
+    public @ResponseBody Optional<User> getActiveUserId() {
+        final Integer activeUserId = ratingRepository.mostActiveUserId();
         return userRepository.findById(activeUserId);
     }
-
-    /*
-    @GetMapping(path="/all")
-    public @ResponseBody Iterable<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-     */
 
 }

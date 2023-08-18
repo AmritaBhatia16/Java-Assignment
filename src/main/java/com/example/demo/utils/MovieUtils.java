@@ -32,7 +32,6 @@ public class MovieUtils {
             for (String genre : genres) {
                 Long genreFreq = 0L;
                 if (watchCount.containsKey(genre)) {
-                    // freq = sum(freq, watchCount.get(genre));
                     genreFreq = watchCount.get(genre) + freq;
                     watchCount.put(genre, genreFreq);
                 } else {
@@ -47,7 +46,7 @@ public class MovieUtils {
 
             }
         }
-        // System.out.println(watchCount);
+
         return topGenre;
     }
 }

@@ -1,18 +1,27 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-@Getter
+@Data
+@NoArgsConstructor
 @Entity
 @Table(name="movies")
 public class Movie {
+
+    @Getter
+    private static final Integer presentGenreCount = 19;
+
     @Id
-    //@GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "movie_id")
     private Integer movieId;
 
@@ -21,9 +30,6 @@ public class Movie {
 
     @Column(name = "release_date")
     private String releaseDate;
-
-    @Column(name = "video_release_date")
-    private String videoReleaseDate;
 
     @Column(name = "unknown")
     private Integer unknown;
@@ -82,50 +88,40 @@ public class Movie {
     @Column(name = "western")
     private Integer western;
 
+    ArrayList<String> genres;
+
     public Integer getReleaseYear() {
         return Integer.parseInt(StringUtils.right(releaseDate, 4));
     }
 
     public Iterable<String> getGenres() {
+        Map<String, Integer> genreFlags = new HashMap<>();
+        genreFlags.put("unknown", unknown);
+        genreFlags.put("action", action);
+        genreFlags.put("adventure", adventure);
+        genreFlags.put("animation", animation);
+        genreFlags.put("childrens", childrens);
+        genreFlags.put("comedy", comedy);
+        genreFlags.put("crime", crime);
+        genreFlags.put("documentary", documentary);
+        genreFlags.put("drama", drama);
+        genreFlags.put("fantasy", fantasy);
+        genreFlags.put("film-noir", filmNoir);
+        genreFlags.put("horror", horror);
+        genreFlags.put("mystery", mystery);
+        genreFlags.put("romance", romance);
+        genreFlags.put("sci-fi", sciFi);
+        genreFlags.put("musical", musical);
+        genreFlags.put("thriller", thriller);
+        genreFlags.put("war", war);
+        genreFlags.put("western", western);
+
         List<String> genres = new ArrayList<>();
-        if(unknown == 1)
-            genres.add("unknown");
-        if(action == 1)
-            genres.add("action");
-        if(adventure == 1)
-            genres.add("adventure");
-        if(animation == 1)
-            genres.add("animation");
-        if(childrens == 1)
-            genres.add("childrens");
-        if(comedy == 1)
-            genres.add("comedy");
-        if(crime == 1)
-            genres.add("crime");
-        if(documentary == 1)
-            genres.add("documentary");
-        if(drama == 1)
-            genres.add("drama");
-        if(fantasy == 1)
-            genres.add("fantasy");
-        if(filmNoir == 1)
-            genres.add("film-noir");
-        if(horror == 1)
-            genres.add("horror");
-        if(mystery == 1)
-            genres.add("mystery");
-        if(romance == 1)
-            genres.add("romance");
-        if(sciFi == 1)
-            genres.add("sci-fi");
-        if(musical == 1)
-            genres.add("musical");
-        if(thriller == 1)
-            genres.add("thriller");
-        if(war == 1)
-            genres.add("war");
-        if(western == 1)
-            genres.add("western");
+        for (Map.Entry<String, Integer> entry : genreFlags.entrySet()) {
+            if (entry.getValue() != null && entry.getValue() == 1) {
+                genres.add(entry.getKey());
+            }
+        }
 
         return genres;
     }

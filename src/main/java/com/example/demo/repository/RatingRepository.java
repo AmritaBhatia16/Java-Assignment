@@ -10,13 +10,13 @@ import java.util.List;
 public interface RatingRepository extends JpaRepository<Rating, RatingId> {
 
     @Query(nativeQuery = true, value = "SELECT user_id FROM ratings GROUP BY user_id ORDER BY count(*) DESC LIMIT 1")
-    Integer mostActiveUser();
+    Integer mostActiveUserId();
 
     @Query(nativeQuery = true, value = "SELECT count(*) FROM ratings GROUP BY item_id ORDER BY count(*) DESC LIMIT 1")
     Integer highestMovieFrequency();
 
     @Query(nativeQuery = true, value = "SELECT item_id from ratings GROUP BY item_id HAVING count(item_id) = :freq")
-    Iterable<Integer> mostWatched(Integer freq);
+    Iterable<Integer> findMovieIdsWithFrequency(Integer freq);
 
     @Query(nativeQuery = true, value = "select item_id from ratings where rating = 5\n" +
             "group by item_id order by count(rating) DESC;")

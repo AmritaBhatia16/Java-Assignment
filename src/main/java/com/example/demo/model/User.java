@@ -1,16 +1,15 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Setter
-@Getter
-@Entity // This tells Hibernate to make a table out of this class
+@Data
+@Entity
 @Table(name = "users")
 public class User {
     @Id
-    //@GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "user_id")
     private Integer userId;
 
