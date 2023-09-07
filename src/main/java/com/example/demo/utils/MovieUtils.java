@@ -1,10 +1,11 @@
 package com.example.demo.utils;
 
-import com.example.demo.model.Movie;
 import com.example.demo.repository.MovieRepository;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MovieUtils {
 
@@ -18,34 +19,22 @@ public class MovieUtils {
             Genre with the highest count/frequency
          */
 
-        String topGenre = null; Long topFreq = 0L;
+        Long topFreq = 0L;
         // Map genre key to its number of occurrences in movieFrequencies
         HashMap<String, Long> watchCount = new HashMap<>();
 
-        for (Object[] row: movieFrequencies) {
+        movieFrequencies.forEach(row-> {
             final Integer id = (Integer) row[0];
             final Long freq = (Long) row[1];
 
-            final Movie movie = movieRepository.findById(id).get();
-
-            final Iterable<String> genres = movie.getGenres();
-            for (String genre : genres) {
-                Long genreFreq = 0L;
-                if (watchCount.containsKey(genre)) {
-                    genreFreq = watchCount.get(genre) + freq;
-                    watchCount.put(genre, genreFreq);
-                } else {
-                    genreFreq = freq;
-                    watchCount.put(genre, genreFreq);
-                }
-
-                if (genreFreq > topFreq) {
-                    topFreq = genreFreq;
-                    topGenre = genre;
-                }
-
-            }
-        }
+            movieRepository.findById(id).get().getGenres()
+                    .forEach(genre -> {
+                        final Long genreFreq = watchCount.getOrDefault(genre, 0L) + freq;
+                        watchCount.put(genre, genreFreq);
+                    });
+        });
+        System.out.println(watchCount);
+        final String topGenre = Collections.max(watchCount.entrySet(), Map.Entry.comparingByValue()).getKey();
 
         return topGenre;
     }

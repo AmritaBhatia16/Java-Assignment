@@ -39,17 +39,11 @@ public class MovieController {
         HashMap<String, String> results = new HashMap<>();
         final Iterable<Integer> highestRatedIds = ratingRepository.highestRated();
 
-        final boolean[] stopLoop = {false};
-
         highestRatedIds.forEach(id -> {
-            if (!stopLoop[0]) {
+            if (results.size() != Movie.getPresentGenreCount()) {
                 final Movie movie = movieRepository.findById(id).get();
                 final Iterable<String> genres = movie.getGenres();
                 genres.forEach(genre -> results.putIfAbsent(genre, movie.getMovieTitle()));
-
-                if (results.size() == Movie.getPresentGenreCount()) {
-                    stopLoop[0] = true;
-                }
             }
         });
 

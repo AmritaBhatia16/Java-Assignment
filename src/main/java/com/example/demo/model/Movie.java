@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -117,11 +116,11 @@ public class Movie {
         genreFlags.put("western", western);
 
         List<String> genres = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : genreFlags.entrySet()) {
-            if (entry.getValue() != null && entry.getValue() == 1) {
-                genres.add(entry.getKey());
+        genreFlags.forEach((genre, flag) -> {
+            if (flag != null && flag == 1) {
+                genres.add(genre);
             }
-        }
+        });
 
         return genres;
     }
