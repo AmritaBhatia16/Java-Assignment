@@ -33,9 +33,7 @@ public class MovieUtils {
                         watchCount.put(genre, genreFreq);
                     });
         });
-        System.out.println(watchCount);
-        final String topGenre = Collections.max(watchCount.entrySet(), Map.Entry.comparingByValue()).getKey();
 
-        return topGenre;
+        return Collections.max(watchCount.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
 }
